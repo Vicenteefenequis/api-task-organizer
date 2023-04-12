@@ -89,6 +89,7 @@ public class Task extends AggregateRoot<TaskID> {
         this.description = aDescription;
         this.dueDateAt = aDueDateAt;
         this.updatedAt = InstantUtils.now();
+        selfValidate();
         return this;
     }
 
