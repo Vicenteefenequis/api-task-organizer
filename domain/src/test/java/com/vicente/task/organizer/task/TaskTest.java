@@ -36,5 +36,16 @@ public class TaskTest {
         Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
     }
 
+    @Test
+    public void givenInvalidNullDescription_whenCallNewTaskAndValidate_shouldReceiveAnError() {
+        final var expectedName = "Design sign up flow";
+        final String expectedDescription = null;
+        final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
+        final var expectedErrorMessage = "'description' should not be null";
+        final var actualException = Assertions.assertThrows(NotificationException.class,() -> Task.newTask(expectedName,expectedDescription,expectedDueDate));
+
+        Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
+    }
+
 
 }
