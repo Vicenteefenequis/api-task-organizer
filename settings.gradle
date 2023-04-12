@@ -1,4 +1,3 @@
 rootProject.name = 'spring-task-organizer-api'
 include 'domain'
-include 'domain'
-
+include 'application'
