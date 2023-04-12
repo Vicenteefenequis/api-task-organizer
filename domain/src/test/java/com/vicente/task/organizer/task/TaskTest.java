@@ -103,4 +103,69 @@ public class TaskTest {
     }
 
 
+    @Test
+    public void givenAInvalidNullName_whenCallUpdateTask_thenThrowNotificationError() {
+        final String expectedName = null;
+        final var expectedDescription = "By the time a prospect arrives your signup page, in most cases, they`ve already evaluation";
+        final var expectedDueDate = Instant.parse("2024-11-04T22:37:30.00Z");
+        final var expectedErrorMessage = "'name' should not be null";
+        final var expectedErrorCount = 1;
+        final var actualTask = Task.newTask("any_name", "any_description", Instant.parse("2023-11-04T22:37:30.00Z"));
+
+        final var actualException = Assertions.assertThrows(NotificationException.class,() -> actualTask.update(
+                expectedName,
+                expectedDescription,
+                expectedDueDate
+        ));
+
+        Assertions.assertEquals(expectedErrorMessage,actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount,actualException.getErrors().size());
+
+    }
+
+
+    @Test
+    public void givenAInvalidNullDescription_whenCallUpdateTask_thenThrowNotificationError() {
+        final var expectedName = "Design sign up flow";
+        final String expectedDescription = null;
+        final var expectedDueDate = Instant.parse("2024-11-04T22:37:30.00Z");
+        final var expectedErrorMessage = "'description' should not be null";
+        final var expectedErrorCount = 1;
+        final var actualTask = Task.newTask("any_name", "any_description", Instant.parse("2023-11-04T22:37:30.00Z"));
+
+        final var actualException = Assertions.assertThrows(NotificationException.class,() -> actualTask.update(
+                expectedName,
+                expectedDescription,
+                expectedDueDate
+        ));
+
+        Assertions.assertEquals(expectedErrorMessage,actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount,actualException.getErrors().size());
+
+    }
+
+
+    @Test
+    public void givenAInvalidNullNameAndDescription_whenCallUpdateTask_thenThrowNotificationError() {
+        final String expectedName = null;
+        final String expectedDescription = null;
+        final var expectedDueDate = Instant.parse("2024-11-04T22:37:30.00Z");
+        final var expectedErrorMessageName = "'name' should not be null";
+        final var expectedErrorMessageDescription = "'description' should not be null";
+        final var expectedErrorCount = 2;
+        final var actualTask = Task.newTask("any_name", "any_description", Instant.parse("2023-11-04T22:37:30.00Z"));
+
+        final var actualException = Assertions.assertThrows(NotificationException.class,() -> actualTask.update(
+                expectedName,
+                expectedDescription,
+                expectedDueDate
+        ));
+
+        Assertions.assertEquals(expectedErrorMessageName,actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorMessageDescription,actualException.getErrors().get(1).message());
+        Assertions.assertEquals(expectedErrorCount,actualException.getErrors().size());
+
+    }
+
+
 }
