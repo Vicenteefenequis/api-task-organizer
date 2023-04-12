@@ -17,17 +17,17 @@ public class TaskValidator extends Validator {
 
     @Override
     public void validate() {
-        checkConstraints(task.getName());
-        checkConstraints(task.getDescription());
+        checkConstraints(task.getName(),"name");
+        checkConstraints(task.getDescription(),"description");
     }
 
-    private void checkConstraints(final String aConstraint) {
+    private void checkConstraints(final String aConstraint,final String fieldName) {
         if (aConstraint == null) {
-            this.validationHandler().append(new Error("'name' should not be null"));
+            this.validationHandler().append(new Error("'%s' should not be null".formatted(fieldName)));
             return;
         }
         if (aConstraint.isBlank()) {
-            this.validationHandler().append(new Error("'name' should not be empty"));
+            this.validationHandler().append(new Error("'%s' should not be empty".formatted(fieldName)));
             return;
         }
 
