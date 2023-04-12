@@ -25,6 +25,16 @@ public class TaskTest {
     }
 
 
+    @Test
+    public void givenInvalidNullName_whenCallNewTaskAndValidate_shouldReceiveAnError() {
+        final String expectedName = null;
+        final var expectedDescription = "By the time a prospect arrives your signup page, in most cases, they`ve already evaluation";
+        final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
+        final var expectedErrorMessage = "'name' should not be null";
+        final var actualException = Assertions.assertThrows(NotificationException.class,() -> Task.newTask(expectedName,expectedDescription,expectedDueDate));
+
+        Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
+    }
 
 
 }
