@@ -15,13 +15,16 @@ public class TaskTest {
         final var expectedDescription = "By the time a prospect arrives your signup page, in most cases, they`ve already evaluation";
         final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
 
-        final var actualTask = Task.newTask(expectedName,expectedDescription,expectedDueDate);
+        final var actualTask = Task.newTask(expectedName, expectedDescription, expectedDueDate);
 
         Assertions.assertNotNull(actualTask);
         Assertions.assertNotNull(actualTask.getId());
-        Assertions.assertEquals(expectedName,actualTask.getName());
-        Assertions.assertEquals(expectedDescription,actualTask.getDescription());
-        Assertions.assertEquals(expectedDueDate,actualTask.getDueDateAt());
+        Assertions.assertEquals(expectedName, actualTask.getName());
+        Assertions.assertEquals(expectedDescription, actualTask.getDescription());
+        Assertions.assertEquals(expectedDueDate, actualTask.getDueDateAt());
+        Assertions.assertNotNull(actualTask.getCreatedAt());
+        Assertions.assertNotNull(actualTask.getUpdatedAt());
+        Assertions.assertNull(actualTask.getDeletedAt());
     }
 
 
@@ -31,9 +34,9 @@ public class TaskTest {
         final var expectedDescription = "By the time a prospect arrives your signup page, in most cases, they`ve already evaluation";
         final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
         final var expectedErrorMessage = "'name' should not be null";
-        final var actualException = Assertions.assertThrows(NotificationException.class,() -> Task.newTask(expectedName,expectedDescription,expectedDueDate));
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> Task.newTask(expectedName, expectedDescription, expectedDueDate));
 
-        Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
+        Assertions.assertEquals(actualException.getErrors().get(0).message(), expectedErrorMessage);
     }
 
     @Test
@@ -42,9 +45,9 @@ public class TaskTest {
         final String expectedDescription = null;
         final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
         final var expectedErrorMessage = "'description' should not be null";
-        final var actualException = Assertions.assertThrows(NotificationException.class,() -> Task.newTask(expectedName,expectedDescription,expectedDueDate));
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> Task.newTask(expectedName, expectedDescription, expectedDueDate));
 
-        Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
+        Assertions.assertEquals(actualException.getErrors().get(0).message(), expectedErrorMessage);
     }
 
 
@@ -54,9 +57,9 @@ public class TaskTest {
         final var expectedDescription = "By the time a prospect arrives your signup page, in most cases, they`ve already evaluation";
         final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
         final var expectedErrorMessage = "'name' should not be empty";
-        final var actualException = Assertions.assertThrows(NotificationException.class,() -> Task.newTask(expectedName,expectedDescription,expectedDueDate));
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> Task.newTask(expectedName, expectedDescription, expectedDueDate));
 
-        Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
+        Assertions.assertEquals(actualException.getErrors().get(0).message(), expectedErrorMessage);
     }
 
     @Test
@@ -65,9 +68,39 @@ public class TaskTest {
         final var expectedDescription = "";
         final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
         final var expectedErrorMessage = "'description' should not be empty";
-        final var actualException = Assertions.assertThrows(NotificationException.class,() -> Task.newTask(expectedName,expectedDescription,expectedDueDate));
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> Task.newTask(expectedName, expectedDescription, expectedDueDate));
 
-        Assertions.assertEquals(actualException.getErrors().get(0).message(),expectedErrorMessage);
+        Assertions.assertEquals(actualException.getErrors().get(0).message(), expectedErrorMessage);
     }
+
+
+    @Test
+    public void givenAValidParams_whenCallUpdateTask_thenReturnTaskUpdated() {
+        final var expectedName = "Design sign up flow";
+        final var expectedDescription = "By the time a prospect arrives your signup page, in most cases, they`ve already evaluation";
+        final var expectedDueDate = Instant.parse("2024-11-04T22:37:30.00Z");
+
+        final var actualTask = Task.newTask("any_name", "any_description", Instant.parse("2023-11-04T22:37:30.00Z"));
+
+        final var actualCreatedAt = actualTask.getCreatedAt();
+        final var actualUpdatedAt = actualTask.getUpdatedAt();
+
+        actualTask.update(
+                expectedName,
+                expectedDescription,
+                expectedDueDate
+        );
+
+        Assertions.assertNotNull(actualTask);
+        Assertions.assertNotNull(actualTask.getId());
+        Assertions.assertEquals(expectedName, actualTask.getName());
+        Assertions.assertEquals(expectedDescription, actualTask.getDescription());
+        Assertions.assertEquals(expectedDueDate, actualTask.getDueDateAt());
+        Assertions.assertEquals(actualCreatedAt, actualTask.getCreatedAt());
+        Assertions.assertTrue(actualUpdatedAt.isBefore(actualTask.getUpdatedAt()));
+        Assertions.assertNull(actualTask.getDeletedAt());
+
+    }
+
 
 }
