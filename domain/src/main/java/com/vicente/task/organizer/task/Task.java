@@ -11,15 +11,18 @@ import java.time.Instant;
 public class Task extends AggregateRoot<TaskID> {
     private String name;
     private String description;
+    private boolean completed;
     private Instant dueDateAt;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
 
+
     protected Task(
             final TaskID anId,
             final String aName,
             final String aDescription,
+            final boolean isCompleted,
             final Instant aDueDateAt,
             final Instant aCreatedAt,
             final Instant aUpdatedAt,
@@ -28,6 +31,7 @@ public class Task extends AggregateRoot<TaskID> {
         super(anId);
         this.name = aName;
         this.description = aDescription;
+        this.completed = isCompleted;
         this.dueDateAt = aDueDateAt;
         this.createdAt = aCreatedAt;
         this.updatedAt = aUpdatedAt;
@@ -37,7 +41,7 @@ public class Task extends AggregateRoot<TaskID> {
     }
 
 
-    public static Task newTask(final String aName, final String aDescription, final Instant aDueDateAt) {
+    public static Task newTask(final String aName, final String aDescription, final boolean isCompleted, final Instant aDueDateAt) {
         final var anId = TaskID.unique();
         final var now = InstantUtils.now();
 
@@ -45,6 +49,7 @@ public class Task extends AggregateRoot<TaskID> {
                 anId,
                 aName,
                 aDescription,
+                isCompleted,
                 aDueDateAt,
                 now,
                 now,
@@ -56,6 +61,7 @@ public class Task extends AggregateRoot<TaskID> {
             final TaskID anId,
             final String aName,
             final String aDescription,
+            final boolean isCompleted,
             final Instant aDueDateAt,
             final Instant aCreatedAt,
             final Instant aUpdatedAt,
@@ -65,6 +71,7 @@ public class Task extends AggregateRoot<TaskID> {
                 anId,
                 aName,
                 aDescription,
+                isCompleted,
                 aDueDateAt,
                 aCreatedAt,
                 aUpdatedAt,
@@ -77,6 +84,7 @@ public class Task extends AggregateRoot<TaskID> {
                 aTask.id,
                 aTask.name,
                 aTask.description,
+                aTask.completed,
                 aTask.dueDateAt,
                 aTask.createdAt,
                 aTask.updatedAt,
@@ -84,10 +92,11 @@ public class Task extends AggregateRoot<TaskID> {
         );
     }
 
-    public Task update(final String aName, final String aDescription, final Instant aDueDateAt) {
+    public Task update(final String aName, final String aDescription, final boolean isCompleted, final Instant aDueDateAt) {
         this.name = aName;
         this.description = aDescription;
         this.dueDateAt = aDueDateAt;
+        this.completed = isCompleted;
         this.updatedAt = InstantUtils.now();
         selfValidate();
         return this;
@@ -120,6 +129,10 @@ public class Task extends AggregateRoot<TaskID> {
 
     public Instant getDeletedAt() {
         return deletedAt;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 
     private void selfValidate() {
