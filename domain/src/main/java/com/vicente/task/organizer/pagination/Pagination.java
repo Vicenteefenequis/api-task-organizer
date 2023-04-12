@@ -1,4 +1,4 @@
-package com.vicente.task.organizer.Pagination;
+package com.vicente.task.organizer.pagination;
 
 import java.util.List;
 import java.util.function.Function;
