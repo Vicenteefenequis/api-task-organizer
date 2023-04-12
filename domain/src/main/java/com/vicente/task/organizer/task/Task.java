@@ -84,9 +84,17 @@ public class Task extends AggregateRoot<TaskID> {
         );
     }
 
+    public Task update(final String aName, final String aDescription, final Instant aDueDateAt) {
+        this.name = aName;
+        this.description = aDescription;
+        this.dueDateAt = aDueDateAt;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
     @Override
     public void validate(final ValidationHandler aHandler) {
-        new TaskValidator(this,aHandler).validate();
+        new TaskValidator(this, aHandler).validate();
     }
 
     public String getName() {
