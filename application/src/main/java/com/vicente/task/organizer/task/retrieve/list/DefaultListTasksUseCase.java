@@ -16,12 +16,6 @@ public class DefaultListTasksUseCase extends ListTasksUseCase {
 
     @Override
     public Pagination<TaskListOutput> execute(SearchQuery aQuery) {
-        final var tasks = taskGateway.findAll(aQuery);
-        return new Pagination<>(
-                tasks.currentPage(),
-                tasks.perPage(),
-                tasks.total(),
-                tasks.items().stream().map(TaskListOutput::from).toList()
-        );
+        return taskGateway.findAll(aQuery).map(TaskListOutput::from);
     }
 }
