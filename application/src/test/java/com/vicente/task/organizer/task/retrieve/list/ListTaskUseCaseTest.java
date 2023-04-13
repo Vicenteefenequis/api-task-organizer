@@ -16,6 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
 @ExtendWith(MockitoExtension.class)
 public class ListTaskUseCaseTest {
     @InjectMocks
@@ -66,7 +69,7 @@ public class ListTaskUseCaseTest {
 
         final var expectedItemsCount = 2;
 
-        Mockito.when(taskGateway.findAll(Mockito.eq(aQuery)))
+        Mockito.when(taskGateway.findAll(eq(aQuery)))
                 .thenReturn(expectedPagination);
 
         final var actualResult = listTaskUseCase.execute(aQuery);
@@ -103,7 +106,7 @@ public class ListTaskUseCaseTest {
 
         final var expectedItemsCount = 0;
 
-        Mockito.when(taskGateway.findAll(Mockito.eq(aQuery)))
+        Mockito.when(taskGateway.findAll(eq(aQuery)))
                 .thenReturn(expectedPagination);
 
         final var actualResult = listTaskUseCase.execute(aQuery);
@@ -113,6 +116,36 @@ public class ListTaskUseCaseTest {
         Assertions.assertEquals(expectedItems, actualResult.items());
         Assertions.assertEquals(expectedPerPage, actualResult.perPage());
         Assertions.assertEquals(tasks.size(), actualResult.total());
+    }
+
+
+    @Test
+    public void givenAValidQuery_whenGatewayThrowsException_shouldReturnException() {
+        // given
+        final var expectedPage = 1;
+        final var expectedPerPage = 2;
+        final var expectedTerms = "";
+        final var expectedSort = "name";
+        final var expectedDirection = "desc";
+        final var expectedErrorMessage = "gateway error";
+
+
+        Mockito.when(taskGateway.findAll(any()))
+                .thenThrow(new IllegalStateException(expectedErrorMessage));
+
+        final var aQuery = SearchQuery.with(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection
+        );
+
+        final var actualException = Assertions.assertThrows(IllegalStateException.class, () -> listTaskUseCase.execute(aQuery));
+
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+
+        Mockito.verify(taskGateway, Mockito.times(1)).findAll(eq(aQuery));
     }
 
 }
