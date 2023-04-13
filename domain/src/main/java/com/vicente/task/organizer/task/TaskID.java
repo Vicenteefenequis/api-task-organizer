@@ -2,6 +2,7 @@ package com.vicente.task.organizer.task;
 
 import com.vicente.task.organizer.Identifier;
 
+import javax.swing.plaf.PanelUI;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,6 +20,10 @@ public class TaskID extends Identifier {
 
     public static TaskID from(final UUID anId) {
         return new TaskID(anId.toString().toLowerCase());
+    }
+
+    public static TaskID from(final String anId) {
+        return new TaskID(anId);
     }
 
     @Override
