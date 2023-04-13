@@ -76,9 +76,43 @@ public class ListTaskUseCaseTest {
         Assertions.assertEquals(expectedItems, actualResult.items());
         Assertions.assertEquals(expectedPerPage, actualResult.perPage());
         Assertions.assertEquals(tasks.size(), actualResult.total());
+    }
 
-        // when
-        // then
+
+    @Test
+    public void givenAValidCommandQuery_whenCallListTaskEmptyResult_thenReturnEmptyList() {
+        // given
+        final var expectedPage = 1;
+        final var expectedPerPage = 2;
+        final var expectedTerms = "";
+        final var expectedSort = "name";
+        final var expectedDirection = "desc";
+
+        final var tasks = List.<Task>of();
+
+        final var aQuery = SearchQuery.with(
+                expectedPage,
+                expectedPerPage,
+                expectedTerms,
+                expectedSort,
+                expectedDirection
+        );
+
+        final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, tasks.size(), tasks);
+        final var expectedItems = expectedPagination.items().stream().map(TaskListOutput::from).toList();
+
+        final var expectedItemsCount = 0;
+
+        Mockito.when(taskGateway.findAll(Mockito.eq(aQuery)))
+                .thenReturn(expectedPagination);
+
+        final var actualResult = listTaskUseCase.execute(aQuery);
+
+        Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
+        Assertions.assertEquals(expectedPage, actualResult.currentPage());
+        Assertions.assertEquals(expectedItems, actualResult.items());
+        Assertions.assertEquals(expectedPerPage, actualResult.perPage());
+        Assertions.assertEquals(tasks.size(), actualResult.total());
     }
 
 }
