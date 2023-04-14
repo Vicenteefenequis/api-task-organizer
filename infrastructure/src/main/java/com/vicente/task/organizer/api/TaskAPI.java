@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("tasks")
-@Tag(name = "Tasks", description = "Tasks API")
+@RequestMapping(value = "tasks")
+@Tag(name = "Tasks")
 public interface TaskAPI {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
