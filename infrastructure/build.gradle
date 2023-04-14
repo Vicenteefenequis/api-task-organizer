@@ -1,8 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.flywaydb:flyway-mysql:8.5.10'
+    }
+}
+
 plugins {
     id 'java'
     id 'application'
     id 'org.springframework.boot' version '2.6.7'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.flywaydb.flyway' version '8.5.10'
 }
 
 group = 'com.vicente.task.organizer'
@@ -22,7 +32,7 @@ dependencies {
 
     implementation("mysql:mysql-connector-java")
 
-    implementation( 'org.springframework.boot:spring-boot-starter-web'){
+    implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
     implementation('org.springframework.boot:spring-boot-starter-undertow')
@@ -32,6 +42,13 @@ dependencies {
 
     testRuntimeOnly('com.h2database:h2')
 }
+
+flyway {
+    url = System.getenv('FLYWAY_DB') ?: 'jdbc:mysql://localhost:3306/task_mysql'
+    user = System.getenv('FLYWAY_USER') ?: 'root'
+    password = System.getenv('FLYWAY_PASSWORD') ?: 'root'
+}
+
 
 test {
     useJUnitPlatform()
