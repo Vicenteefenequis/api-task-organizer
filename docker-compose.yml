@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  mysql:
+    container_name: task_mysql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "3306:3306"
+    networks:
+      - task_network
+
+networks:
+  task_network:
+    driver: bridge
