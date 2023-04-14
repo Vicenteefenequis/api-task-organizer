@@ -3,9 +3,11 @@ package com.vicente.task.organizer.task;
 import com.vicente.task.organizer.pagination.Pagination;
 import com.vicente.task.organizer.pagination.SearchQuery;
 import com.vicente.task.organizer.task.persistence.TaskRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class TaskMySQLGateway implements TaskGateway {
     private final TaskRepository taskRepository;
 
