@@ -6,14 +6,13 @@ services:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: task
+      MYSQL_DATABASE: task_mysql
     security_opt:
       - seccomp:unconfined
     ports:
-      - "3306:3306"
+      - 3306:3306
     networks:
-      - task_network
+      - task_mysql_network
 
 networks:
-  task_network:
-    driver: bridge
+  task_mysql_network:
