@@ -7,9 +7,16 @@ import com.vicente.task.organizer.domain.task.TaskGateway;
 import com.vicente.task.organizer.domain.task.TaskID;
 import com.vicente.task.organizer.infrastructure.task.persistence.TaskJpaEntity;
 import com.vicente.task.organizer.infrastructure.task.persistence.TaskRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+
 import java.util.Optional;
+
+import static com.vicente.task.organizer.infrastructure.utils.SpecificationUtils.like;
 
 @Service
 public class TaskMySQLGateway implements TaskGateway {
@@ -27,7 +34,7 @@ public class TaskMySQLGateway implements TaskGateway {
     @Override
     public void deleteById(TaskID taskId) {
         String anId = taskId.getValue();
-        if(this.taskRepository.existsById(anId)) {
+        if (this.taskRepository.existsById(anId)) {
             this.taskRepository.deleteById(anId);
         }
     }
@@ -45,11 +52,36 @@ public class TaskMySQLGateway implements TaskGateway {
 
     @Override
     public Pagination<Task> findAll(SearchQuery aQuery) {
-        return null;
+        final var page = PageRequest.of(
+                aQuery.page(),
+                aQuery.perPage(),
+                Sort.by(Direction.fromString(aQuery.direction()), aQuery.sort())
+        );
+
+        // Busca dinamica pelo criterio terms (name ou description)
+
+        final var specifications = Optional.ofNullable(aQuery.terms())
+                .filter(str -> !str.isBlank())
+                .map(this::assembleSpecification)
+                .orElse(null);
+
+        final var pageResult = this.taskRepository.findAll(Specification.where(specifications), page);
+        return new Pagination<>(
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.map(TaskJpaEntity::toAggregate).toList()
+        );
     }
 
 
     private Task save(final Task aTask) {
         return this.taskRepository.save(TaskJpaEntity.from(aTask)).toAggregate();
+    }
+
+    private Specification<TaskJpaEntity> assembleSpecification(final String str) {
+        final Specification<TaskJpaEntity> nameLike = like("name", str);
+        final Specification<TaskJpaEntity> descriptionLike = like("description", str);
+        return nameLike.or(descriptionLike);
     }
 }

@@ -1,6 +1,7 @@
 package com.vicente.task.organizer.infrastructure.task;
 
 import com.vicente.task.organizer.MySQGatewayTest;
+import com.vicente.task.organizer.domain.pagination.SearchQuery;
 import com.vicente.task.organizer.domain.task.Task;
 import com.vicente.task.organizer.domain.task.TaskID;
 import com.vicente.task.organizer.infrastructure.task.persistence.TaskJpaEntity;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
+import java.util.List;
 
 @MySQGatewayTest
 public class TaskMySQLGatewayTest {
@@ -154,5 +156,59 @@ public class TaskMySQLGatewayTest {
         final var actualTask = taskMySQLGateway.findById(TaskID.from("INVALID_ID"));
 
         Assertions.assertTrue(actualTask.isEmpty());
+    }
+
+    @Test
+    public void givePrePersistedTasks_whenCallsFindAll_shouldReturnPaginated() {
+        final var expectedPage = 0;
+        final var expectedPerPage = 1;
+        final var expectedTotal = 2;
+
+        final var aTask1 = Task.newTask("Task 1", "Description 1", false, Instant.parse("2023-11-04T22:37:30.00Z"));
+        final var aTask2 = Task.newTask("Task 2", "Description 2", false, Instant.parse("2023-11-04T22:37:30.00Z"));
+
+        Assertions.assertEquals(0, taskRepository.count());
+
+        taskRepository.saveAll(List.of(
+                TaskJpaEntity.from(aTask1),
+                TaskJpaEntity.from(aTask2)
+        ));
+
+        Assertions.assertEquals(2, taskRepository.count());
+
+        final var aQuery = new SearchQuery(0,1,"","name","ASC");
+        final var actualResult = taskMySQLGateway.findAll(aQuery);
+
+        Assertions.assertEquals(expectedPage, actualResult.currentPage());
+        Assertions.assertEquals(expectedPerPage,actualResult.perPage());
+        Assertions.assertEquals(expectedTotal,actualResult.total());
+        Assertions.assertEquals(1,actualResult.items().size());
+        Assertions.assertEquals(aTask1.getName(), actualResult.items().get(0).getName());
+
+    }
+
+    @Test
+    public void givenEmptyTasksTable_whenCallsFindAll_shouldReturnEmptyPage() {
+        final var expectedPage = 0;
+        final var expectedPerPage = 1;
+        final var expectedTotal = 0;
+
+
+        Assertions.assertEquals(0, taskRepository.count());
+
+        final var query = new SearchQuery(
+                0,
+                1,
+                "",
+                "name",
+                "asc"
+        );
+
+        final var actualResult = taskMySQLGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, actualResult.currentPage());
+        Assertions.assertEquals(expectedPerPage, actualResult.perPage());
+        Assertions.assertEquals(expectedTotal, actualResult.total());
+        Assertions.assertEquals(0, actualResult.items().size());
     }
 }

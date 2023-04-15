@@ -1,6 +1,7 @@
 package com.vicente.task.organizer.infrastructure.task.presenters;
 
 
+import com.vicente.task.organizer.application.retrieve.list.TaskListOutput;
 import com.vicente.task.organizer.infrastructure.task.models.TaskListResponse;
 import com.vicente.task.organizer.infrastructure.task.models.TaskResponse;
 import com.vicente.task.organizer.application.retrieve.get.TaskOutput;
@@ -19,9 +20,9 @@ public interface TaskApiPresenter {
         );
     }
 
-    static TaskListResponse present(final TaskOutput output, final String id) {
+    static TaskListResponse present(final TaskListOutput output) {
         return new TaskListResponse(
-                id,
+                output.id(),
                 output.name(),
                 output.description(),
                 output.isCompleted(),

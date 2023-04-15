@@ -10,6 +10,8 @@ public record TaskListOutput(
         String description,
         boolean isCompleted,
         Instant dueDateAt,
+        Instant createdAt,
+        Instant updatedAt,
         Instant deletedAt
 ) {
     public static TaskListOutput from(final Task aTask) {
@@ -19,6 +21,8 @@ public record TaskListOutput(
                 aTask.getDescription(),
                 aTask.isCompleted(),
                 aTask.getDueDateAt(),
+                aTask.getCreatedAt(),
+                aTask.getUpdatedAt(),
                 aTask.getDeletedAt()
         );
     }
