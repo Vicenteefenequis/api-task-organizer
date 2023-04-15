@@ -146,4 +146,13 @@ public class TaskMySQLGatewayTest {
         Assertions.assertEquals(aTask.getUpdatedAt(), actualTask.getUpdatedAt());
         Assertions.assertNull(aTask.getDeletedAt());
     }
+
+    @Test
+    public void givenValidTaskNotStorage_whenCallsFindByID_shouldReturnEmpty() {
+        Assertions.assertEquals(0, taskRepository.count());
+
+        final var actualTask = taskMySQLGateway.findById(TaskID.from("INVALID_ID"));
+
+        Assertions.assertTrue(actualTask.isEmpty());
+    }
 }
