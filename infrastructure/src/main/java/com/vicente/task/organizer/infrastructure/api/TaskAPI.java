@@ -4,6 +4,7 @@ import com.vicente.task.organizer.domain.pagination.Pagination;
 import com.vicente.task.organizer.infrastructure.task.models.CreateTaskRequest;
 import com.vicente.task.organizer.infrastructure.task.models.TaskListResponse;
 import com.vicente.task.organizer.infrastructure.task.models.TaskResponse;
+import com.vicente.task.organizer.infrastructure.task.models.UpdateTaskRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -55,5 +56,18 @@ public interface TaskAPI {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     TaskResponse getTask(@PathVariable("id") final String id);
+
+    @PutMapping(
+            value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Update a task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task updated"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    ResponseEntity<?> updateTask(@PathVariable("id") final String id, @RequestBody UpdateTaskRequest request);
 
 }
