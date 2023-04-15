@@ -2,6 +2,7 @@ package com.vicente.task.organizer.infrastructure.task;
 
 import com.vicente.task.organizer.MySQGatewayTest;
 import com.vicente.task.organizer.domain.task.Task;
+import com.vicente.task.organizer.infrastructure.task.persistence.TaskJpaEntity;
 import com.vicente.task.organizer.infrastructure.task.persistence.TaskRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -54,5 +55,57 @@ public class TaskMySQLGatewayTest {
         Assertions.assertEquals(aTask.getCreatedAt(), actualEntity.getCreatedAt());
         Assertions.assertEquals(aTask.getUpdatedAt(), actualEntity.getUpdatedAt());
         Assertions.assertNull(aTask.getDeletedAt());
+    }
+
+    @Test
+    public void givenAValidTask_whenCallsUpdate_shouldReturnAnUpdatedTask() {
+        final var expectedName = "Task 1";
+        final var expectedDescription = "Description 1";
+        final var expectedIsCompleted = false;
+        final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
+
+        final var aTask = Task.newTask("ANY_TASK", "ANY_DESCRIPTION", false, expectedDueDate);
+
+        Assertions.assertEquals(0, taskRepository.count());
+
+        taskRepository.saveAndFlush(TaskJpaEntity.from(aTask));
+
+        Assertions.assertEquals(1, taskRepository.count());
+
+        final var aUpdateTask = aTask.clone().update(expectedName, expectedDescription, expectedIsCompleted, expectedDueDate);
+
+        final var actualTask = taskMySQLGateway.update(aUpdateTask);
+
+        Assertions.assertEquals(1, taskRepository.count());
+
+        Assertions.assertNotNull(actualTask);
+        Assertions.assertEquals(aUpdateTask.getId(), actualTask.getId());
+        Assertions.assertEquals(expectedName, actualTask.getName());
+        Assertions.assertEquals(expectedDescription, actualTask.getDescription());
+        Assertions.assertEquals(expectedIsCompleted, actualTask.isCompleted());
+        Assertions.assertEquals(expectedDueDate, actualTask.getDueDateAt());
+        Assertions.assertEquals(aUpdateTask.getCreatedAt(), actualTask.getCreatedAt());
+        Assertions.assertTrue(aTask.getUpdatedAt().isBefore(aUpdateTask.getUpdatedAt()));
+        Assertions.assertNull(aUpdateTask.getDeletedAt());
+    }
+
+    @Test
+    public void givenAPrePersistedAnValidTaskId_whenTryToDeleteIt_shouldDeleteTask() {
+        final var aTask = Task.newTask(
+                "Task 1",
+                "Description 1",
+                false,
+                Instant.parse("2023-11-04T22:37:30.00Z")
+        );
+
+        Assertions.assertEquals(0, taskRepository.count());
+
+        taskRepository.saveAndFlush(TaskJpaEntity.from(aTask));
+
+        Assertions.assertEquals(1, taskRepository.count());
+
+        taskMySQLGateway.deleteById(aTask.getId());
+
+        Assertions.assertEquals(0, taskRepository.count());
     }
 }

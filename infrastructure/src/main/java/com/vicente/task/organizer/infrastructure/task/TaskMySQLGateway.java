@@ -26,7 +26,7 @@ public class TaskMySQLGateway implements TaskGateway {
 
     @Override
     public void deleteById(TaskID taskId) {
-
+        this.taskRepository.deleteById(taskId.getValue());
     }
 
     @Override
