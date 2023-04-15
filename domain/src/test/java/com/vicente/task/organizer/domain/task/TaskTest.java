@@ -182,5 +182,18 @@ public class TaskTest {
 
     }
 
+    @Test
+    public void givenAValidParams_whenCallUpdateCompleted_thenTaskChangeCompleted() {
+        final var expectedIsCompleted = true;
+        final var actualTask = Task.newTask("any_name", "any_description", false, Instant.parse("2023-11-04T22:37:30.00Z"));
+
+        actualTask.updateCompleted();
+
+        Assertions.assertNotNull(actualTask);
+        Assertions.assertNotNull(actualTask.getId());
+        Assertions.assertEquals(expectedIsCompleted, actualTask.isCompleted());
+        Assertions.assertNull(actualTask.getDeletedAt());
+    }
+
 
 }
