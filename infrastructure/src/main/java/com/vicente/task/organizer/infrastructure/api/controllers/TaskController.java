@@ -5,6 +5,7 @@ import com.vicente.task.organizer.application.retrieve.get.GetTaskByIdUseCase;
 import com.vicente.task.organizer.application.retrieve.list.ListTasksUseCase;
 import com.vicente.task.organizer.application.update.UpdateTaskCommand;
 import com.vicente.task.organizer.application.update.UpdateTaskUseCase;
+import com.vicente.task.organizer.application.update.completed.UpdateCompletedTaskUseCase;
 import com.vicente.task.organizer.domain.pagination.Pagination;
 import com.vicente.task.organizer.domain.pagination.SearchQuery;
 import com.vicente.task.organizer.infrastructure.api.TaskAPI;
@@ -30,19 +31,22 @@ public class TaskController implements TaskAPI {
     private final GetTaskByIdUseCase getTaskByIdUseCase;
     private final UpdateTaskUseCase updateTaskUseCase;
     private final DeleteTaskUseCase deleteTaskUseCase;
+    private final UpdateCompletedTaskUseCase updateCompletedTaskUseCase;
 
     public TaskController(
             final CreateTaskUseCase createTaskUseCase,
             final ListTasksUseCase listTasksUseCase,
             final GetTaskByIdUseCase getTaskByIdUseCase,
             final UpdateTaskUseCase updateTaskUseCase,
-            final DeleteTaskUseCase deleteTaskUseCase
+            final DeleteTaskUseCase deleteTaskUseCase,
+            final UpdateCompletedTaskUseCase updateCompletedTaskUseCase
     ) {
         this.createTaskUseCase = Objects.requireNonNull(createTaskUseCase);
         this.listTasksUseCase = Objects.requireNonNull(listTasksUseCase);
         this.getTaskByIdUseCase = Objects.requireNonNull(getTaskByIdUseCase);
         this.updateTaskUseCase = Objects.requireNonNull(updateTaskUseCase);
         this.deleteTaskUseCase = Objects.requireNonNull(deleteTaskUseCase);
+        this.updateCompletedTaskUseCase = Objects.requireNonNull(updateCompletedTaskUseCase);
     }
 
     @Override
@@ -94,5 +98,10 @@ public class TaskController implements TaskAPI {
     @Override
     public void deleteTask(String id) {
         this.deleteTaskUseCase.execute(id);
+    }
+
+    @Override
+    public void completeTask(String id) {
+        this.updateCompletedTaskUseCase.execute(id);
     }
 }

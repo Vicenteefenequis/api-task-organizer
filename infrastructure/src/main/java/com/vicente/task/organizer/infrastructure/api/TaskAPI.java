@@ -83,5 +83,17 @@ public interface TaskAPI {
     })
     void deleteTask(@PathVariable("id") final String id);
 
+    @PatchMapping(
+            value = "/{id}/toggle-completed",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Change completed task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task changed completed"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    void completeTask(@PathVariable("id") final String id);
+
 
 }

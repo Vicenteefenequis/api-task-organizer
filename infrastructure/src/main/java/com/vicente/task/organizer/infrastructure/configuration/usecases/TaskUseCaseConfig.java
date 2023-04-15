@@ -1,5 +1,7 @@
 package com.vicente.task.organizer.infrastructure.configuration.usecases;
 
+import com.vicente.task.organizer.application.update.completed.DefaultUpdateCompletedTaskUseCase;
+import com.vicente.task.organizer.application.update.completed.UpdateCompletedTaskUseCase;
 import com.vicente.task.organizer.domain.task.TaskGateway;
 import com.vicente.task.organizer.application.create.CreateTaskUseCase;
 import com.vicente.task.organizer.application.create.DefaultCreateTaskUseCase;
@@ -30,6 +32,11 @@ public class TaskUseCaseConfig {
     @Bean
     public UpdateTaskUseCase updateTaskUseCase() {
         return new DefaultUpdateTaskUseCase(taskGateway);
+    }
+
+    @Bean
+    public UpdateCompletedTaskUseCase updateCompletedTaskUseCase() {
+        return new DefaultUpdateCompletedTaskUseCase(taskGateway);
     }
 
     @Bean
