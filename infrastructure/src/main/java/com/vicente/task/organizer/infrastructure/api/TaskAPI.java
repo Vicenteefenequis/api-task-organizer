@@ -70,4 +70,18 @@ public interface TaskAPI {
     })
     ResponseEntity<?> updateTask(@PathVariable("id") final String id, @RequestBody UpdateTaskRequest request);
 
+
+    @DeleteMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Delete a task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task deleted"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    void deleteTask(@PathVariable("id") final String id);
+
+
 }

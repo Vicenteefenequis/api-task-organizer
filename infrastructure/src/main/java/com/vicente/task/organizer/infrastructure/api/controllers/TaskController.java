@@ -1,5 +1,6 @@
 package com.vicente.task.organizer.infrastructure.api.controllers;
 
+import com.vicente.task.organizer.application.delete.DeleteTaskUseCase;
 import com.vicente.task.organizer.application.retrieve.get.GetTaskByIdUseCase;
 import com.vicente.task.organizer.application.retrieve.list.ListTasksUseCase;
 import com.vicente.task.organizer.application.update.UpdateTaskCommand;
@@ -25,23 +26,23 @@ import java.util.function.Function;
 public class TaskController implements TaskAPI {
 
     private final CreateTaskUseCase createTaskUseCase;
-
     private final ListTasksUseCase listTasksUseCase;
-
     private final GetTaskByIdUseCase getTaskByIdUseCase;
-
     private final UpdateTaskUseCase updateTaskUseCase;
+    private final DeleteTaskUseCase deleteTaskUseCase;
 
     public TaskController(
             final CreateTaskUseCase createTaskUseCase,
             final ListTasksUseCase listTasksUseCase,
             final GetTaskByIdUseCase getTaskByIdUseCase,
-            final UpdateTaskUseCase updateTaskUseCase
+            final UpdateTaskUseCase updateTaskUseCase,
+            final DeleteTaskUseCase deleteTaskUseCase
     ) {
         this.createTaskUseCase = Objects.requireNonNull(createTaskUseCase);
         this.listTasksUseCase = Objects.requireNonNull(listTasksUseCase);
         this.getTaskByIdUseCase = Objects.requireNonNull(getTaskByIdUseCase);
         this.updateTaskUseCase = Objects.requireNonNull(updateTaskUseCase);
+        this.deleteTaskUseCase = Objects.requireNonNull(deleteTaskUseCase);
     }
 
     @Override
@@ -88,5 +89,10 @@ public class TaskController implements TaskAPI {
         final var output = this.updateTaskUseCase.execute(aCommand);
 
         return ResponseEntity.ok(output);
+    }
+
+    @Override
+    public void deleteTask(String id) {
+        this.deleteTaskUseCase.execute(id);
     }
 }
