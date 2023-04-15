@@ -139,6 +139,11 @@ public class Task extends AggregateRoot<TaskID> implements Cloneable {
         return completed;
     }
 
+    public void updateCompleted() {
+        this.completed = !isCompleted();
+        this.updatedAt = InstantUtils.now();
+    }
+
     private void selfValidate() {
         final var notification = Notification.create();
         validate(notification);
