@@ -3,6 +3,7 @@ package com.vicente.task.organizer.infrastructure.api;
 import com.vicente.task.organizer.domain.pagination.Pagination;
 import com.vicente.task.organizer.infrastructure.task.models.CreateTaskRequest;
 import com.vicente.task.organizer.infrastructure.task.models.TaskListResponse;
+import com.vicente.task.organizer.infrastructure.task.models.TaskResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,5 +43,17 @@ public interface TaskAPI {
             @RequestParam(name = "sort", required = false, defaultValue = "name") final String sort,
             @RequestParam(name = "dir", required = false, defaultValue = "asc") final String direction
     );
+
+    @Operation(summary = "Get a task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task retrieved"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    TaskResponse getTask(@PathVariable("id") final String id);
 
 }
