@@ -118,4 +118,32 @@ public class TaskMySQLGatewayTest {
 
         Assertions.assertEquals(0, taskRepository.count());
     }
+
+    @Test
+    public void givenAPrePersistedTaskAnValidTaskID_whenCallsFindById_shouldReturnCategory() {
+        final var expectedName = "Task 1";
+        final var expectedDescription = "Description 1";
+        final var expectedIsCompleted = false;
+        final var expectedDueDate = Instant.parse("2023-11-04T22:37:30.00Z");
+
+        final var aTask = Task.newTask(expectedName, expectedDescription, expectedIsCompleted, expectedDueDate);
+
+        Assertions.assertEquals(0, taskRepository.count());
+
+        taskRepository.saveAndFlush(TaskJpaEntity.from(aTask));
+
+        Assertions.assertEquals(1, taskRepository.count());
+
+        final var actualTask = taskMySQLGateway.findById(aTask.getId()).get();
+
+        Assertions.assertNotNull(actualTask);
+        Assertions.assertEquals(aTask.getId(), actualTask.getId());
+        Assertions.assertEquals(expectedName, actualTask.getName());
+        Assertions.assertEquals(expectedDescription, actualTask.getDescription());
+        Assertions.assertEquals(expectedIsCompleted, actualTask.isCompleted());
+        Assertions.assertEquals(expectedDueDate, actualTask.getDueDateAt());
+        Assertions.assertEquals(aTask.getCreatedAt(), actualTask.getCreatedAt());
+        Assertions.assertEquals(aTask.getUpdatedAt(), actualTask.getUpdatedAt());
+        Assertions.assertNull(aTask.getDeletedAt());
+    }
 }

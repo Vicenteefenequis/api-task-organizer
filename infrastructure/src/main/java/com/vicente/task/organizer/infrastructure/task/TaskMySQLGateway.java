@@ -34,7 +34,8 @@ public class TaskMySQLGateway implements TaskGateway {
 
     @Override
     public Optional<Task> findById(TaskID taskId) {
-        return Optional.empty();
+        final var anId = taskId.getValue();
+        return this.taskRepository.findById(anId).map(TaskJpaEntity::toAggregate);
     }
 
     @Override
