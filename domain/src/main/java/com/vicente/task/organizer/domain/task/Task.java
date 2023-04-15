@@ -8,7 +8,7 @@ import com.vicente.task.organizer.domain.validation.handler.Notification;
 
 import java.time.Instant;
 
-public class Task extends AggregateRoot<TaskID> {
+public class Task extends AggregateRoot<TaskID> implements Cloneable {
     private String name;
     private String description;
     private boolean completed;
@@ -55,6 +55,10 @@ public class Task extends AggregateRoot<TaskID> {
                 now,
                 null
         );
+    }
+
+    public static Task clone(final Task aTask) {
+        return aTask.clone();
     }
 
     public static Task with(
@@ -141,6 +145,15 @@ public class Task extends AggregateRoot<TaskID> {
 
         if (notification.hasError()) {
             throw new NotificationException("", notification);
+        }
+    }
+
+    @Override
+    public Task clone() {
+        try {
+            return (Task) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
         }
     }
 

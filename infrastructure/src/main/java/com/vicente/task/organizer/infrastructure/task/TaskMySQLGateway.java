@@ -36,7 +36,7 @@ public class TaskMySQLGateway implements TaskGateway {
 
     @Override
     public Task update(Task task) {
-        return null;
+        return save(task);
     }
 
     @Override
