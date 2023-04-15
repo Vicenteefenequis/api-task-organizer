@@ -2,6 +2,7 @@ package com.vicente.task.organizer.infrastructure.task;
 
 import com.vicente.task.organizer.MySQGatewayTest;
 import com.vicente.task.organizer.domain.task.Task;
+import com.vicente.task.organizer.domain.task.TaskID;
 import com.vicente.task.organizer.infrastructure.task.persistence.TaskJpaEntity;
 import com.vicente.task.organizer.infrastructure.task.persistence.TaskRepository;
 import org.junit.jupiter.api.Assertions;
@@ -105,6 +106,15 @@ public class TaskMySQLGatewayTest {
         Assertions.assertEquals(1, taskRepository.count());
 
         taskMySQLGateway.deleteById(aTask.getId());
+
+        Assertions.assertEquals(0, taskRepository.count());
+    }
+
+    @Test
+    public void givenInvalidTaskId_whenTryToDeleteIt_shouldDeleteTask() {
+        Assertions.assertEquals(0, taskRepository.count());
+
+        taskMySQLGateway.deleteById(TaskID.from("INVALID_ID"));
 
         Assertions.assertEquals(0, taskRepository.count());
     }
