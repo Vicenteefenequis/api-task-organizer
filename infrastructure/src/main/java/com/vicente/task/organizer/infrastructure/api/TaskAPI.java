@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "tasks")
+@CrossOrigin(origins = "*")
 @Tag(name = "Tasks")
 public interface TaskAPI {
     @PostMapping(
